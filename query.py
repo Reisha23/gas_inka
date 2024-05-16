@@ -1,16 +1,16 @@
 import mysql.connector
 import streamlit as st
 
-#koneksi mysql
+#koneksi database mysql
 # Fungsi untuk membuat koneksi ke database MySQL
 def connect_to_database():
     try:
         conn = mysql.connector.connect(
             host="127.0.0.1",
-            port="3306",
+            #port="3306",
             user="root",
             password="",
-            database="gudang_gas_rev1"
+            database="gudang_gas_db"
         )
         if conn.is_connected():
             return conn
@@ -119,7 +119,7 @@ def get_gas_allocation_demand():
     '''
     return execute_query(query)
 
-# Query untuk menentukan pengadaan kebutuhan gas
+# Query untuk menentukan pengadaan kebutuhan gas        
 def get_gas_supply_demand():
     query = '''
         SELECT hm.id_lokasi AS lokasi,
