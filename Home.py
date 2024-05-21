@@ -21,13 +21,12 @@ sidebar_style = """
 """
 st.markdown(sidebar_style, unsafe_allow_html=True)
 
-# Function to fetch users from the database
+# Function untuk fetching users dari database
 def fetch_users():
-    # Replace this with your actual database fetching logic
-    users = read_data('user')  # Assuming `read_data` function reads from 'user' table and returns a list of tuples
-    return [user[2] for user in users]  # Extracting 'nama_pengguna'
+    users = read_data('user')
+    return [user[2] for user in users]
 
-# Initial User Selection
+# Inisiasi select user
 if 'selected_user' not in st.session_state:
     st.title("Select User")
     users = fetch_users()
@@ -36,10 +35,10 @@ if 'selected_user' not in st.session_state:
         st.session_state.selected_user = selected_user
         st.experimental_rerun()
 
-# If user is selected, show the dashboard
+# Jika user dipilih, menampilkan dashboard
 if 'selected_user' in st.session_state:
     st.title(f"Welcome {st.session_state.selected_user} to INKA Gas Dashboard")
-    st.write("Menampilkan semua data gas yang diperlukan melalui filter & fitur yang tersedia.")
+    st.write("Menampilkan data gas yang diperlukan melalui filter & fitur yang tersedia.")
 
     # Sidebar
     with st.sidebar:
@@ -53,33 +52,24 @@ if 'selected_user' in st.session_state:
         operation_choice = st.selectbox(
             "Choose Operation", ["Create", "Read", "Update", "Delete"])
 
-    # Show tables list
-    if st.button("Show All Tables"):
-        all_tables = show_all_table()
-        if all_tables:
-            st.write("Tables available:")
-            st.table({"Daftar": all_tables})
-        else:
-            st.write("No tables available.")
-
-    # Button to view all stock
+    # Button view all stock
     if st.button("View All Stock"):
         all_stock_data = view_all_stock()
         if all_stock_data:
             st.write("Data Tersedia :")
             st.table(all_stock_data)
             
-            # Creating bar chart
+            # Bar chart
             df = pd.DataFrame(all_stock_data, columns=["ID Tabung", "Jenis Tabung", "Keterangan"])
             fig = px.bar(df, x="Jenis Tabung", y="Keterangan", color="ID Tabung", title="Stok Gas Berdasarkan Jenis")
             
-            # Adding color threshold feature
-            threshold = 80
-            df['Color'] = 'green'  # default color
+            # Menambahkan color threshold feature
+            threshold = 6
+            df['Color'] = 'green'  # Default color
             
-            df.loc[df['Keterangan'] < threshold, 'Color'] = 'red'
+            df.loc[df['Keterangan'] < threshold, 'Color'] = 'red'  # Jika indikator di bawah threshold
             
-            # Warning message if stock is below 80
+            # Warning message jika stock di bawah 80
             low_stock_warning = df[df['Keterangan'] < threshold]
             if not low_stock_warning.empty:
                 st.markdown(
@@ -94,54 +84,61 @@ if 'selected_user' in st.session_state:
         else:
             st.warning("No data available.")
             
-    # Load data based on filter choice
-    if filter_choice in ["Gas Allocation", "Gas Allocation Demand"]:
-        data = get_gas_allocation() if filter_choice == "Gas Allocation" else get_gas_allocation_demand()
-    elif filter_choice == "Gas Demand":
-        data = get_gas_demand()
-    elif filter_choice == "Gas Supply Demand":
-        data = get_gas_supply_demand()
-    elif filter_choice == "Mutasi by Date":
-        data = get_mutasi_by_date()
-    elif filter_choice == "Mutasi History":
-        data = view_mutasi_history()
-
-    # Display filtered data
-    display_filtered_data(filter_choice, {filter_choice: data})
-
-    # CRUD operations
+    # Load data berdasarkan filter choice
+    all_stock_data, gas_allocation_data, gas_demand_data, gas_allocation_demand_data, gas_supply_demand_data, mutasi_by_date, mutasi_history = load_data()
+    
+    # Dictionary untuk opsi filter
+    filter_options = {
+        "Gas Allocation": gas_allocation_data,
+        "Gas Demand": gas_demand_data,
+        "Gas Allocation Demand": gas_allocation_demand_data,
+        "Gas Supply Demand": gas_supply_demand_data,
+        "Mutasi by Date": mutasi_by_date,
+        "Mutasi History": mutasi_history
+    }
+    
+    # Tampilkan data berdasarkan filter choice
+    display_filtered_data(filter_choice, filter_options)
+    
+    # Implementasi operasi CRUD
+    st.subheader(f"{operation_choice} Data")
+    
     if operation_choice == "Create":
-        st.subheader("Create New Data")
-        table_name = st.text_input("Table Name")
-        data = {}  # Initialize dictionary for new data
-        if st.button("Create Data"):
+        table_name = st.text_input("Table Name:")
+        columns = st.text_area("Columns (comma-separated):")
+        values = st.text_area("Values (comma-separated):")
+        
+        if st.button("Create"):
+            data = dict(zip(columns.split(','), values.split(',')))
             create_data(table_name, data)
-            
+    
     elif operation_choice == "Read":
-        st.subheader("Read Data")
-        table_name = st.text_input("Table Name")
-        if st.button("Read Data"):
-            if table_name:
-                data = read_data(table_name)
-                if data:
-                    st.write("Data Available:")
-                    st.table(pd.DataFrame(data))  # Adjust column names accordingly
-                else:
-                    st.warning("No data available.")
+        table_name = st.text_input("Table Name:")
+        
+        if st.button("Read"):
+            data = read_data(table_name)
+            if data:
+                st.table(data)
             else:
-                st.error("Please enter a table name.")
-            
+                st.warning("No data available.")
+    
     elif operation_choice == "Update":
-        st.subheader("Update Data")
-        table_name = st.text_input("Table Name")
-        data = {}  # Initialize dictionary for updated data
-        condition = {}  # Initialize dictionary for condition
-        if st.button("Update Data"):
+        table_name = st.text_input("Table Name:")
+        columns = st.text_area("Columns to update (comma-separated):")
+        values = st.text_area("New values (comma-separated):")
+        condition_columns = st.text_area("Condition columns (comma-separated):")
+        condition_values = st.text_area("Condition values (comma-separated):")
+        
+        if st.button("Update"):
+            data = dict(zip(columns.split(','), values.split(',')))
+            condition = dict(zip(condition_columns.split(','), condition_values.split(',')))
             update_data(table_name, data, condition)
-            
+    
     elif operation_choice == "Delete":
-        st.subheader("Delete Data")
-        table_name = st.text_input("Table Name")
-        condition = {}  # Initialize dictionary for condition
-        if st.button("Delete Data"):
+        table_name = st.text_input("Table Name:")
+        condition_columns = st.text_area("Condition columns (comma-separated):")
+        condition_values = st.text_area("Condition values (comma-separated):")
+        
+        if st.button("Delete"):
+            condition = dict(zip(condition_columns.split(','), condition_values.split(',')))
             delete_data(table_name, condition)

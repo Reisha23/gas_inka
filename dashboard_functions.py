@@ -44,7 +44,7 @@ def display_filtered_data(filter_choice, filter_options):
     elif filter_choice == "Mutasi History":  # Menambahkan pilihan untuk menampilkan history mutasi
         st.dataframe(pd.DataFrame(filtered_data, columns=['Mutasi ID', 'Lokasi ID', 'Operasi ID', 'BPM ID', 'BPRM ID','Tanggal']))
         
-#fungsi CRUD
+# Fungsi CRUD
 # Create data
 def create_data(table_name, data):
     conn = connect_to_database()
