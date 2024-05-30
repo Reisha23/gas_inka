@@ -1,6 +1,7 @@
 import streamlit as st
 import pandas as pd
 import plotly.express as px
+import hashlib
 from dashboard_functions import *
 
 # Set page configuration
@@ -21,23 +22,62 @@ sidebar_style = """
 """
 st.markdown(sidebar_style, unsafe_allow_html=True)
 
-# Function untuk fetching users dari database
-def fetch_users():
-    users = read_data('user')
-    return [user[2] for user in users]
+# Function untuk membuat koneksi ke database MySQL
+def connect_to_database():
+    try:
+        conn = mysql.connector.connect(
+            host="127.0.0.1",
+            user="root",
+            password="",
+            database="gas_rev"
+        )
+        if conn.is_connected():
+            return conn
+    except mysql.connector.Error as e:
+        st.error(f"Error connecting to MySQL database: {e}")
+        return None
 
-# Inisiasi select user
-if 'selected_user' not in st.session_state:
-    st.title("Select User")
-    users = fetch_users()
-    selected_user = st.selectbox("Please select your user:", users)
-    if st.button("Proceed"):
-        st.session_state.selected_user = selected_user
-        st.experimental_rerun()
+# Function untuk melakukan query dan fetch data
+def execute_query(query, params=None):
+    conn = connect_to_database()
+    if conn:
+        cursor = conn.cursor()
+        cursor.execute(query, params)
+        result = cursor.fetchall()
+        cursor.close()
+        conn.close()
+        return result
+    else:
+        return None
 
-# Jika user dipilih, menampilkan dashboard
-if 'selected_user' in st.session_state:
-    st.title(f"Welcome {st.session_state.selected_user} to INKA Gas Dashboard")
+# Function untuk login user
+def login_user(email_user, password_user):
+    query = '''
+        SELECT nama_user FROM pengguna 
+        WHERE email_user = %s AND password_user = MD5(%s)
+    '''
+    result = execute_query(query, (email_user, password_user))
+    if result:
+        return result[0][0]
+    else:
+        return None
+
+# Login form
+if 'logged_in_user' not in st.session_state:
+    st.title("User Login")
+    email = st.text_input("Email")
+    password = st.text_input("Password", type="password")
+    if st.button("Login"):
+        user = login_user(email, password)
+        if user:
+            st.session_state.logged_in_user = user
+            st.experimental_rerun()
+        else:
+            st.error("Invalid email or password")
+
+# Jika user berhasil login, tampilkan dashboard
+if 'logged_in_user' in st.session_state:
+    st.title(f"Welcome {st.session_state.logged_in_user} to INKA Gas Dashboard")
     st.write("Menampilkan data gas yang diperlukan melalui filter & fitur yang tersedia.")
 
     # Sidebar
@@ -46,11 +86,11 @@ if 'selected_user' in st.session_state:
         
         st.subheader("filter options :")
         filter_choice = st.selectbox(
-            "Filter Data", ["Gas Allocation", "Gas Demand", "Gas Allocation Demand", "Gas Supply Demand", "Mutasi by Date", "Mutasi History"], index=5)
+            "Filter gas", ["Gas masuk", "Gas keluar"])
 
         st.subheader("edit data :")
         operation_choice = st.selectbox(
-            "Choose Operation", ["Create", "Read", "Update", "Delete"])
+            "pilih operasi", ["Create", "Read", "Update", "Delete"])
 
     # Button view all stock
     if st.button("View All Stock"):
@@ -85,16 +125,12 @@ if 'selected_user' in st.session_state:
             st.warning("No data available.")
             
     # Load data berdasarkan filter choice
-    all_stock_data, gas_allocation_data, gas_demand_data, gas_allocation_demand_data, gas_supply_demand_data, mutasi_by_date, mutasi_history = load_data()
+    gas_masuk, gas_keluar = load_data()
     
     # Dictionary untuk opsi filter
     filter_options = {
-        "Gas Allocation": gas_allocation_data,
-        "Gas Demand": gas_demand_data,
-        "Gas Allocation Demand": gas_allocation_demand_data,
-        "Gas Supply Demand": gas_supply_demand_data,
-        "Mutasi by Date": mutasi_by_date,
-        "Mutasi History": mutasi_history
+        "Gas Masuk": gas_masuk,
+        "Gas Keluar": gas_keluar
     }
     
     # Tampilkan data berdasarkan filter choice
