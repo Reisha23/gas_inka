@@ -42,6 +42,22 @@ def view_all_stock():
 def gas_masuk():
     query = '''
     SELECT 
+    gm.id_tabung,
+    jt.jenis_tabung AS nama_gas,
+    CASE 
+        WHEN gm.jumlah_masuk > 0 THEN 'Masuk'
+        ELSE 'Tidak Masuk'
+    END AS kondisi,
+    gm.tanggal_masuk,
+    gm.jumlah_masuk,
+    (SELECT SUM(jumlah_masuk) FROM gas_masuk WHERE gas_masuk.id_tabung = gm.id_tabung) AS total_jumlah_masuk
+    FROM 
+        gas_masuk gm
+    JOIN 
+        tabung t ON gm.id_tabung = t.id_tabung
+    JOIN 
+        jenis_tabung jt ON t.id_jenis_tabung = jt.id_jenis_tabung;
+
     '''
     return execute_query(query)
 
