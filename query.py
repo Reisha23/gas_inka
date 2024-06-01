@@ -31,41 +31,39 @@ def execute_query(query):
     else:
         return None
 
-#fetch QUERY
-
+#fetching query
 #tampilkan seluruh stok dan jenis gas yang ada di gudang
 def view_all_stock():
     query = '''
+    SELECT * FROM `tabung` 
     '''
     return execute_query(query)
 
-def gas_masuk():
+#tampilkan seluruh gas yang masuk
+def view_all_supplier(id_supplier):
+    query = f"SELECT * FROM `tabung` WHERE id_supplier = {id_supplier}"
+    return execute_query(query)
+
+#tampilkan seluruh gas yang masuk
+def view_all_masuk():
     query = '''
-    SELECT 
-    gm.id_tabung,
-    jt.jenis_tabung AS nama_gas,
-    CASE 
-        WHEN gm.jumlah_masuk > 0 THEN 'Masuk'
-        ELSE 'Tidak Masuk'
-    END AS kondisi,
-    gm.tanggal_masuk,
-    gm.jumlah_masuk,
-    (SELECT SUM(jumlah_masuk) FROM gas_masuk WHERE gas_masuk.id_tabung = gm.id_tabung) AS total_jumlah_masuk
-    FROM 
-        gas_masuk gm
-    JOIN 
-        tabung t ON gm.id_tabung = t.id_tabung
-    JOIN 
-        jenis_tabung jt ON t.id_jenis_tabung = jt.id_jenis_tabung;
-
+    SELECT
+    *
+    FROM
+        `gas_masuk`
+    INNER JOIN tabung ON tabung.id_jenis_tabung = gas_masuk.id_tabung AND tabung.id_supplier = gas_masuk.id_supplier
+    INNER JOIN supplier ON tabung.id_supplier = supplier.id_supplier
     '''
     return execute_query(query)
 
-
-# Query untuk melihat gas keluar
-def gas_keluar():
+#tampilkan seluruh gas yang keluar
+def view_all_keluar():
     query = '''
+    SELECT
+    *
+    FROM
+        `gas_keluar`
+    INNER JOIN tabung ON tabung.id_jenis_tabung = gas_keluar.id_tabung AND tabung.id_supplier = gas_keluar.id_supplier
+    INNER JOIN supplier ON tabung.id_supplier = supplier.id_supplier
     '''
     return execute_query(query)
-
-
