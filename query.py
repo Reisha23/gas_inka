@@ -67,3 +67,15 @@ def view_all_keluar():
     INNER JOIN supplier ON tabung.id_supplier = supplier.id_supplier
     '''
     return execute_query(query)
+
+#def input_masuk():
+    #query = '''
+    
+    #'''
+    #return execute_query(query)
+
+#def input_keluar():
+    #query = '''
+    
+    #'''
+    #return execute_query(query)

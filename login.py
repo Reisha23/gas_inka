@@ -4,6 +4,7 @@ import plotly.express as px
 import hashlib
 import mysql.connector
 from dashboard_functions import *
+
 # Fungsi untuk membuat koneksi ke database MySQL
 def connect_to_database():
     try:
@@ -69,26 +70,36 @@ def login_page():
         with st.sidebar:
             st.image("pictures/logo.png", width=128)
             
+            #select box filter transaksi gas masuk & keluar
             st.subheader("filter options :")
             filter_transaction = st.selectbox(
                 "Filter gas", ["Gas masuk", "Gas keluar"])
             
             st.subheader("all stock by supplier :")
             filter_choice = st.selectbox(
-                "filter supplier", ["SIG", "SGI", "LANGGENG", "TIRA", "SAMATOR"])
+                "filter supplier", ["SIG", "LANGGENG", "TIRA", "SAMATOR"])
+            
+            #button filter CRU gas masuk & keluar
+            st.subheader("input gas:")
+            filter_masuk = st.button("input gas masuk")    
+            filter_keluar = st.button("input gas keluar")
         
         #memanggil filter berdasarkan pilihan checkbox
         if filter_choice:
             data = display_filtered_supplier(filter_choice)
         if filter_transaction:
-            data = display_filtered_data(filter_transaction)   
+            data = display_filtered_data(filter_transaction)
+        if filter_masuk:
+            display_input_data(True)
+        if filter_keluar:
+            display_input_data(False)               
 
         # Button view all stock
         if st.button("View All Stock"):
             all_stock_data = view_all_stock()
             if all_stock_data:
                 st.write("Data Tersedia :")
-                df = pd.DataFrame(all_stock_data, columns=("ID Tabung","Nomor Tabung","Jenis Tabung","Id Supplier","Kode Supplier","Total Stock"))
+                df = pd.DataFrame(all_stock_data, columns=("ID Tabung","Nama Tabung","Jenis Tabung","Id Supplier","Kode Supplier","Total Stock"))
                 # Mengubah kolom pertama menjadi angka yang dimulai dari 1
                 df.iloc[:, 0] = range(1, len(df) + 1)
                 st.table(df)
