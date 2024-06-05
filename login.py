@@ -71,7 +71,7 @@ def login_page():
             st.image("pictures/logo.png", width=128)
             
             #select box filter transaksi gas masuk & keluar
-            st.subheader("filter options :")
+            st.subheader("filter gas :")
             filter_transaction = st.selectbox(
                 "Filter gas", ["Gas masuk", "Gas keluar"])
             
@@ -80,19 +80,30 @@ def login_page():
                 "filter supplier", ["SIG", "LANGGENG", "TIRA", "SAMATOR"])
             
             #button filter CRU gas masuk & keluar
-            st.subheader("input gas:")
-            filter_masuk = st.button("input gas masuk")    
-            filter_keluar = st.button("input gas keluar")
+            st.subheader("tambahkan data :")
+            if st.button("input gas masuk"):
+                st.session_state.filter_masuk = True
+                st.session_state.filter_keluar = False
+                st.experimental_rerun()
+
+            if st.button("input gas keluar"):
+                st.session_state.filter_keluar = True
+                st.session_state.filter_masuk = False
+                st.experimental_rerun()
+                
+            st.subheader("tampilkan table :")
+            if st.button("Tampilkan Stok"):
+                display_stok_data()
         
         #memanggil filter berdasarkan pilihan checkbox
         if filter_choice:
             data = display_filtered_supplier(filter_choice)
         if filter_transaction:
             data = display_filtered_data(filter_transaction)
-        if filter_masuk:
+        if st.session_state.filter_masuk:
             display_input_data(True)
-        if filter_keluar:
-            display_input_data(False)               
+        if st.session_state.filter_keluar:
+            display_input_data(False)                
 
         # Button view all stock
         if st.button("View All Stock"):
@@ -103,4 +114,6 @@ def login_page():
                 # Mengubah kolom pertama menjadi angka yang dimulai dari 1
                 df.iloc[:, 0] = range(1, len(df) + 1)
                 st.table(df)
+                
+        
 

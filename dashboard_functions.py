@@ -93,15 +93,25 @@ def display_input_data(is_masuk):
     user_options = get_select_options('pengguna', 'id_user', 'nama_user')
     
     st.subheader("Input Data Gas")
-    selected_tabung = st.selectbox("Select Tabung", list(tabung_options.keys()))
-    selected_supplier = st.selectbox("Select Supplier", list(supplier_options.keys()))
-    selected_user = st.selectbox("Select User", list(user_options.keys()))
-    jumlah = st.number_input("Jumlah", min_value=1, step=1)
+    
+    if 'selected_tabung' not in st.session_state:
+        st.session_state.selected_tabung = None
+    if 'selected_supplier' not in st.session_state:
+        st.session_state.selected_supplier = None
+    if 'selected_user' not in st.session_state:
+        st.session_state.selected_user = None
+    if 'jumlah' not in st.session_state:
+        st.session_state.jumlah = 1
+
+    st.session_state.selected_tabung = st.selectbox("Select Tabung", list(tabung_options.keys()), index=0 if st.session_state.selected_tabung is None else list(tabung_options.keys()).index(st.session_state.selected_tabung))
+    st.session_state.selected_supplier = st.selectbox("Select Supplier", list(supplier_options.keys()), index=0 if st.session_state.selected_supplier is None else list(supplier_options.keys()).index(st.session_state.selected_supplier))
+    st.session_state.selected_user = st.selectbox("Select User", list(user_options.keys()), index=0 if st.session_state.selected_user is None else list(user_options.keys()).index(st.session_state.selected_user))
+    st.session_state.jumlah = st.number_input("Jumlah", min_value=1, step=1, value=st.session_state.jumlah)
 
     if st.button("Submit"):
-        tabung_id = tabung_options[selected_tabung]
-        supplier_id = supplier_options[selected_supplier]
-        user_id = user_options[selected_user]
+        tabung_id = tabung_options[st.session_state.selected_tabung]
+        supplier_id = supplier_options[st.session_state.selected_supplier]
+        user_id = user_options[st.session_state.selected_user]
         
         if is_masuk:
             query = '''
@@ -114,12 +124,32 @@ def display_input_data(is_masuk):
                 VALUES (%s, %s, %s, %s)
             '''
         
-        params = (tabung_id, supplier_id, user_id, jumlah)
+        params = (tabung_id, supplier_id, user_id, st.session_state.jumlah)
         execute_query(query, params)
         st.success("Data successfully submitted!")
-# !noted masih belum dapat menginput data setelah submit, bug ketika memilih opsi, web akan terestart
+# !noted terdapat error ketika input data TypeError: execute_query() takes 1 positional argument but 2 were given
+
+# menampilkan table
+def display_stok_data():
+    query = '''
+        SELECT nama, 
+               SUM(CASE WHEN supplier = 'TIRA' THEN jumlah ELSE 0 END) AS TIRA,
+               SUM(CASE WHEN supplier = 'LANGGENG' THEN jumlah ELSE 0 END) AS LANGGENG,
+               SUM(CASE WHEN supplier = 'SAMATOR' THEN jumlah ELSE 0 END) AS SAMATOR,
+               SUM(CASE WHEN supplier = 'SIG' THEN jumlah ELSE 0 END) AS SIG,
+               SUM(jumlah) AS STOK_GUDANG
+        FROM tabung
+        GROUP BY nama
+    '''
+    result = execute_query(query)
+    if result:
+        df = pd.DataFrame(result, columns=['Nama', 'TIRA', 'LANGGENG', 'SAMATOR', 'SIG', 'STOK_GUDANG'])
+        st.table(df)
+    else:
+        st.write("No data available")
 
 # fungsi menampilkan table dengan nilai dari supplier kemudian jenis tabung dan output yang dihasilkan adalah
 # jumlah total stock dari setiap supplier serta menambahkan notifikasi peringatan ketika supply mulai menipis
+
 # format codingan agar lebih rapi ketika semua sudah work
 # ! deploying web app.py
