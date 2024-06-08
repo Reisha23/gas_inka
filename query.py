@@ -31,6 +31,20 @@ def execute_query(query):
     else:
         return None
 
+def executeInserQuery(query,param):
+    conn = connect_to_database()
+    if conn:
+        cursor = conn.cursor()
+        args = param
+        cursor.execute(query,args)
+        conn.commit()
+        cursor.close()
+        conn.close()
+        return True
+    else:
+        return False
+    
+
 #fetching query
 #tampilkan seluruh stok dan jenis gas yang ada di gudang
 def view_all_stock():
@@ -68,14 +82,31 @@ def view_all_keluar():
     '''
     return execute_query(query)
 
-#def input_masuk():
-    #query = '''
-    
-    #'''
-    #return execute_query(query)
+def view_all_history():
+    query = '''
+    SELECT
+    *
+    FROM
+        `gas_history`
+    INNER JOIN pengguna ON gas_history.id_user = pengguna.id_user
+    INNER JOIN jenis_tabung ON gas_history.id_tabung = jenis_tabung.id_jenis_tabung
+    INNER JOIN supplier ON gas_history.id_supplier = supplier.id_supplier
+    '''
+    return execute_query(query)
 
-#def input_keluar():
-    #query = '''
+def get_all_user():
+    query = f"SELECT * FROM `pengguna`"
+    return execute_query(query)
+
+def get_all_tabung() :
+    query = f"SELECT * FROM `jenis_tabung`"
+    return execute_query(query)
+
+def get_all_supplier() :
+    query = f"SELECT * FROM `supplier`"
+    return execute_query(query)
+
+def get_all_stock_tabung():
+    query = f"SELECT tabung.id_jenis_tabung, jenis_tabung.jenis_tabung, supplier.nama_supplier, tabung.total_stock FROM tabung INNER JOIN jenis_tabung ON jenis_tabung.id_jenis_tabung = tabung.id_jenis_tabung INNER JOIN supplier ON supplier.id_supplier = tabung.id_supplier GROUP BY id_jenis_tabung, nama_tabung;"
+    return execute_query(query)
     
-    #'''
-    #return execute_query(query)

@@ -47,6 +47,7 @@ def login_user(email_user, password_user):
 
 # Halaman login
 def login_page():
+    
     if 'logged_in_user' not in st.session_state:
         st.title("User Login")
         email = st.text_input("Email")
@@ -81,38 +82,90 @@ def login_page():
             
             #button filter CRU gas masuk & keluar
             st.subheader("tambahkan data :")
+            if 'filter_masuk' not in st.session_state:
+                st.session_state.filter_masuk = True
+                st.session_state.filter_keluar = False
+                
             if st.button("input gas masuk"):
                 st.session_state.filter_masuk = True
                 st.session_state.filter_keluar = False
-                st.experimental_rerun()
 
             if st.button("input gas keluar"):
+                print('halo')
                 st.session_state.filter_keluar = True
                 st.session_state.filter_masuk = False
-                st.experimental_rerun()
-                
-            st.subheader("tampilkan table :")
-            if st.button("Tampilkan Stok"):
-                display_stok_data()
-        
+            
+            isMasuk = st.session_state.filter_masuk
+                                   
         #memanggil filter berdasarkan pilihan checkbox
         if filter_choice:
             data = display_filtered_supplier(filter_choice)
         if filter_transaction:
             data = display_filtered_data(filter_transaction)
-        if st.session_state.filter_masuk:
-            display_input_data(True)
-        if st.session_state.filter_keluar:
-            display_input_data(False)                
+        
+        display_input_data(isMasuk)
+                    
 
         # Button view all stock
+        st.subheader("tampilkan seluruh stock :")
         if st.button("View All Stock"):
-            all_stock_data = view_all_stock()
+            all_stock_data = get_all_stock_tabung()
+            dataFinal = []
+            stockTemp = [0, 0, 0, 0]
+            id_temp = 0
+            nama_temp = ''
+            stock_temp = 0
+            index = 0
+            stock_mapping = {'LANGGENG': 0, 'SAMATOR': 1, 'SIG': 2, 'TIRA': 3}
+            for item in all_stock_data:
+                if id_temp == 0:
+                   id_temp = item[0]
+                   nama_temp = item[1]
+                
+                if id_temp != item[0]: 
+                    dataFinal.append((nama_temp,*stockTemp,sum(stockTemp)))
+                    stockTemp = [0,0,0,0]
+                    id_temp = item[0]
+                    nama_temp = item[1]
+                elif index+1 == len(all_stock_data):
+                     if id_temp != item[0]:
+                           dataFinal.append((nama_temp,*stockTemp,sum(stockTemp)))
+                           stockTemp = [0,0,0,0]
+                           id_temp = item[0]
+                           nama_temp = item[1]
+                           stockTemp[stock_mapping[item[2]]] = item[3]
+                           dataFinal.append((nama_temp,*stockTemp,sum(stockTemp)))
+                           break
+                     else:
+                         stockTemp[stock_mapping[item[2]]] = item[3]
+                         dataFinal.append((nama_temp,*stockTemp,sum(stockTemp)))
+                         stockTemp = [0,0,0,0]
+                         break
+                         
+                stockTemp[stock_mapping[item[2]]] = item[3]
+                  
+                index+=1
+            
+            print(dataFinal)
+                             
             if all_stock_data:
                 st.write("Data Tersedia :")
-                df = pd.DataFrame(all_stock_data, columns=("ID Tabung","Nama Tabung","Jenis Tabung","Id Supplier","Kode Supplier","Total Stock"))
-                # Mengubah kolom pertama menjadi angka yang dimulai dari 1
-                df.iloc[:, 0] = range(1, len(df) + 1)
+                data = view_all_stock()
+                df = pd.DataFrame(dataFinal, columns=( "Nama", "Langgeng", "Samator", "SIG", "TIRA", "Total Stock"))
+                st.table(df)
+
+        #button view history
+        st.subheader("tampilkan history :")
+        if st.button("history"):
+            all_history_data = view_all_history()
+            if all_history_data:
+                st.write("History keluar masuk gas :")
+                data = view_all_history()                    
+                dataFix = []
+                for item in data:
+                        dataFix.append((item[4],item[5],item[6],item[12],item[14],item[8]))
+                df = pd.DataFrame(dataFix, columns=("Tanggal", "Jenis Aktivitas", "Jumlah", "Gas", "Supplier", "User Input"))
+                print(dataFix)
                 st.table(df)
                 
         

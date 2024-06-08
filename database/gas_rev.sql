@@ -3,7 +3,7 @@
 -- https://www.phpmyadmin.net/
 --
 -- Host: 127.0.0.1
--- Generation Time: Jun 01, 2024 at 09:32 AM
+-- Generation Time: Jun 08, 2024 at 10:36 AM
 -- Server version: 10.4.27-MariaDB
 -- PHP Version: 8.2.0
 
@@ -42,9 +42,11 @@ CREATE TABLE `gas_history` (
 --
 
 INSERT INTO `gas_history` (`id_history`, `id_tabung`, `id_supplier`, `id_user`, `tanggal`, `jenis_aktivitas`, `jumlah`) VALUES
-(1, 2, 3, 5, '2024-06-01', 'masuk', 10),
-(3, 2, 4, 5, '2024-06-01', 'masuk', 20),
-(4, 2, NULL, 5, '2024-06-01', 'keluar', 20);
+(46, 4, 5, 3, '2024-06-08', 'masuk', 100),
+(47, 4, NULL, 3, '2024-06-08', 'keluar', 20),
+(48, 4, 3, 3, '2024-06-08', 'masuk', 20),
+(49, 4, 2, 3, '2024-06-08', 'masuk', 60),
+(50, 4, 4, 3, '2024-06-08', 'masuk', 20);
 
 -- --------------------------------------------------------
 
@@ -66,7 +68,7 @@ CREATE TABLE `gas_keluar` (
 --
 
 INSERT INTO `gas_keluar` (`id_gas_keluar`, `id_tabung`, `id_user`, `id_supplier`, `tanggal_keluar`, `jumlah_keluar`) VALUES
-(1, 2, 5, 4, '2024-06-01 04:13:10', 20);
+(8, 4, 3, 5, '2024-06-08 08:33:36', 20);
 
 --
 -- Triggers `gas_keluar`
@@ -135,10 +137,10 @@ CREATE TABLE `gas_masuk` (
 --
 
 INSERT INTO `gas_masuk` (`id_gas_masuk`, `id_tabung`, `id_user`, `id_supplier`, `tanggal_masuk`, `jumlah_masuk`) VALUES
-(2, 1, 3, 1, '2024-06-01 03:44:28', 80),
-(3, 1, 5, 1, '2024-06-01 03:44:54', 20),
-(4, 2, 5, 3, '2024-06-01 03:56:35', 10),
-(6, 2, 5, 4, '2024-06-01 04:01:45', 20);
+(49, 4, 3, 5, '2024-06-08 08:33:13', 100),
+(50, 4, 3, 3, '2024-06-08 08:34:50', 20),
+(51, 4, 3, 2, '2024-06-08 08:35:03', 60),
+(52, 4, 3, 4, '2024-06-08 08:35:17', 20);
 
 --
 -- Triggers `gas_masuk`
@@ -237,11 +239,10 @@ CREATE TABLE `supplier` (
 --
 
 INSERT INTO `supplier` (`id_supplier`, `nama_supplier`) VALUES
-(1, 'SGI'),
-(2, 'SIG'),
 (3, 'LANGGENG'),
-(4, 'TIRA'),
-(5, 'SAMATOR');
+(5, 'SAMATOR'),
+(2, 'SIG'),
+(4, 'TIRA');
 
 -- --------------------------------------------------------
 
@@ -251,7 +252,7 @@ INSERT INTO `supplier` (`id_supplier`, `nama_supplier`) VALUES
 
 CREATE TABLE `tabung` (
   `id_tabung` int(11) NOT NULL,
-  `nomor_tabung` varchar(255) NOT NULL,
+  `nama_tabung` varchar(255) NOT NULL,
   `id_jenis_tabung` int(11) DEFAULT NULL,
   `id_supplier` int(11) DEFAULT NULL,
   `kode_supplier` varchar(255) NOT NULL,
@@ -262,37 +263,31 @@ CREATE TABLE `tabung` (
 -- Dumping data for table `tabung`
 --
 
-INSERT INTO `tabung` (`id_tabung`, `nomor_tabung`, `id_jenis_tabung`, `id_supplier`, `kode_supplier`, `total_stock`) VALUES
-(1, 'TAB001_SGI_AR100', 1, 1, 'SGI_AR100', 100),
-(2, 'TAB002_SGI_AR97', 2, 1, 'SGI_AR97', 0),
-(3, 'TAB003_SGI_AR82', 3, 1, 'SGI_AR82', 0),
-(4, 'TAB004_SGI_O2', 4, 1, 'SGI_O2', 0),
-(5, 'TAB005_SGI_CO2', 5, 1, 'SGI_CO2', 0),
-(6, 'TAB006_SGI_NITRO', 6, 1, 'SGI_CO2', 0),
-(7, 'TAB001_SIG_AR100', 1, 2, 'SIG_AR100', 0),
-(8, 'TAB002_SIG_AR97', 2, 2, 'SIG_AR97', 0),
-(9, 'TAB003_SIG_AR82', 3, 2, 'SIG_AR82', 0),
-(10, 'TAB004_SIG_O2', 4, 2, 'SIG_O2', 0),
-(11, 'TAB005_SIG_CO2', 5, 2, 'SIG_CO2', 0),
-(12, 'TAB006_SIG_NITRO', 6, 2, 'SIG_CO2', 0),
-(13, 'TAB001_LANG_AR100', 1, 3, 'LANGGENG_AR100', 0),
-(14, 'TAB002_LANG_AR97', 2, 3, 'LANGGENG_AR97', 0),
-(15, 'TAB003_LANG_AR82', 3, 3, 'LANGGENG_AR82', 0),
-(16, 'TAB004_LANG_O2', 4, 3, 'LANGGENG_O2', 0),
-(17, 'TAB005_LANG_CO2', 5, 3, 'LANGGENG_CO2', 0),
-(18, 'TAB006_LANG_NITRO', 6, 3, 'LANGGENG_CO2', 0),
-(19, 'TAB001_TIRA_AR100', 1, 4, 'TIRA_AR100', 0),
-(20, 'TAB002_TIRA_AR97', 2, 4, 'TIRA_AR97', 0),
-(21, 'TAB003_TIRA_AR82', 3, 4, 'TIRA_AR82', 0),
-(22, 'TAB004_TIRA_O2', 4, 4, 'TIRA_O2', 0),
-(23, 'TAB005_TIRA_CO2', 5, 4, 'TIRA_CO2', 0),
-(24, 'TAB006_TIRA_NITRO', 6, 4, 'TIRA_CO2', 0),
-(25, 'TAB001_SMTR_AR100', 1, 5, 'SAMATOR_AR100', 0),
-(26, 'TAB002_SMTR_AR97', 2, 5, 'SAMATOR_AR97', 0),
-(27, 'TAB003_SMTR_AR82', 3, 5, 'SAMATOR_AR82', 0),
-(28, 'TAB004_SMTR_O2', 4, 5, 'SAMATOR_O2', 0),
-(29, 'TAB005_SMTR_CO2', 5, 5, 'SAMATOR_CO2', 0),
-(30, 'TAB006_SMTR_NITRO', 6, 5, 'SAMATOR_CO2', 0);
+INSERT INTO `tabung` (`id_tabung`, `nama_tabung`, `id_jenis_tabung`, `id_supplier`, `kode_supplier`, `total_stock`) VALUES
+(7, 'SIG_ARGON100', 1, 2, 'SIG_AR100', 0),
+(8, 'SIG_ARGON97', 2, 2, 'SIG_AR97', 0),
+(9, 'SIG_ARGON82', 3, 2, 'SIG_AR82', 0),
+(10, 'SIG_OKSIGEN', 4, 2, 'SIG_O2', 60),
+(11, 'SIG_CO2', 5, 2, 'SIG_CO2', 0),
+(12, 'SIG_NITROGEN', 6, 2, 'SIG_NITRO', 0),
+(13, 'LANGGENG_ARGON100', 1, 3, 'LANG_AR100', 0),
+(14, 'LANGGENG_ARGON97', 2, 3, 'LANG_AR97', 0),
+(15, 'LANGGENG_ARGON82', 3, 3, 'LANG_AR82', 0),
+(16, 'LANGGENG_OKSIGEN', 4, 3, 'LANG_O2', 20),
+(17, 'LANGGENG_CO2', 5, 3, 'LANG_CO2', 0),
+(18, 'LANGGENG_NITROGEN', 6, 3, 'LANG_NITRO', 0),
+(19, 'TIRA_ARGON100', 1, 4, 'TIRA_AR100', 0),
+(20, 'TIRA_ARGON97', 2, 4, 'TIRA_AR97', 0),
+(21, 'TIRA_ARGON82', 3, 4, 'TIRA_AR82', 0),
+(22, 'TIRA_OKSIGEN', 4, 4, 'TIRA_O2', 20),
+(23, 'TIRA_C02', 5, 4, 'TIRA_CO2', 0),
+(24, 'TIRA_NITROGEN', 6, 4, 'TIRA_NITRO', 0),
+(25, 'SAMATOR_ARGON100', 1, 5, 'SMTR_AR100', 0),
+(26, 'SAMATOR_ARGON97', 2, 5, 'SMTR_AR97', 0),
+(27, 'SAMATOR_ARGON82', 3, 5, 'SMTR_AR82', 0),
+(28, 'SAMATOR_OKSIGEN', 4, 5, 'SMTR_O2', 80),
+(29, 'SAMATOR_CO2', 5, 5, 'SMTR_CO2', 0),
+(30, 'SAMATOR_NITROGEN', 6, 5, 'SMTR_NITRO', 0);
 
 --
 -- Indexes for dumped tables
@@ -342,7 +337,8 @@ ALTER TABLE `pengguna`
 -- Indexes for table `supplier`
 --
 ALTER TABLE `supplier`
-  ADD PRIMARY KEY (`id_supplier`);
+  ADD PRIMARY KEY (`id_supplier`),
+  ADD UNIQUE KEY `nama_supplier` (`nama_supplier`);
 
 --
 -- Indexes for table `tabung`
@@ -360,19 +356,19 @@ ALTER TABLE `tabung`
 -- AUTO_INCREMENT for table `gas_history`
 --
 ALTER TABLE `gas_history`
-  MODIFY `id_history` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=5;
+  MODIFY `id_history` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=51;
 
 --
 -- AUTO_INCREMENT for table `gas_keluar`
 --
 ALTER TABLE `gas_keluar`
-  MODIFY `id_gas_keluar` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=2;
+  MODIFY `id_gas_keluar` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=9;
 
 --
 -- AUTO_INCREMENT for table `gas_masuk`
 --
 ALTER TABLE `gas_masuk`
-  MODIFY `id_gas_masuk` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=7;
+  MODIFY `id_gas_masuk` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=53;
 
 --
 -- AUTO_INCREMENT for table `jenis_tabung`
@@ -406,9 +402,9 @@ ALTER TABLE `tabung`
 -- Constraints for table `gas_history`
 --
 ALTER TABLE `gas_history`
-  ADD CONSTRAINT `gas_history_ibfk_1` FOREIGN KEY (`id_tabung`) REFERENCES `gas_masuk` (`id_tabung`),
-  ADD CONSTRAINT `gas_history_ibfk_2` FOREIGN KEY (`id_supplier`) REFERENCES `gas_masuk` (`id_supplier`),
-  ADD CONSTRAINT `gas_history_ibfk_4` FOREIGN KEY (`id_user`) REFERENCES `gas_masuk` (`id_user`);
+  ADD CONSTRAINT `gas_history_ibfk_1` FOREIGN KEY (`id_tabung`) REFERENCES `jenis_tabung` (`id_jenis_tabung`),
+  ADD CONSTRAINT `gas_history_ibfk_2` FOREIGN KEY (`id_supplier`) REFERENCES `supplier` (`id_supplier`),
+  ADD CONSTRAINT `gas_history_ibfk_4` FOREIGN KEY (`id_user`) REFERENCES `pengguna` (`id_user`);
 
 --
 -- Constraints for table `gas_keluar`
@@ -422,9 +418,9 @@ ALTER TABLE `gas_keluar`
 -- Constraints for table `gas_masuk`
 --
 ALTER TABLE `gas_masuk`
-  ADD CONSTRAINT `gas_masuk_ibfk_1` FOREIGN KEY (`id_tabung`) REFERENCES `tabung` (`id_jenis_tabung`),
   ADD CONSTRAINT `gas_masuk_ibfk_2` FOREIGN KEY (`id_user`) REFERENCES `pengguna` (`id_user`),
-  ADD CONSTRAINT `gas_masuk_supp` FOREIGN KEY (`id_supplier`) REFERENCES `tabung` (`id_supplier`);
+  ADD CONSTRAINT `gas_masuk_supp` FOREIGN KEY (`id_supplier`) REFERENCES `supplier` (`id_supplier`),
+  ADD CONSTRAINT `tabung_masuk_rtest` FOREIGN KEY (`id_tabung`) REFERENCES `jenis_tabung` (`id_jenis_tabung`);
 
 --
 -- Constraints for table `tabung`
