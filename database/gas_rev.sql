@@ -3,7 +3,7 @@
 -- https://www.phpmyadmin.net/
 --
 -- Host: 127.0.0.1
--- Generation Time: Jun 08, 2024 at 10:36 AM
+-- Generation Time: Jun 19, 2024 at 03:00 AM
 -- Server version: 10.4.27-MariaDB
 -- PHP Version: 8.2.0
 
@@ -37,17 +37,6 @@ CREATE TABLE `gas_history` (
   `jumlah` int(11) NOT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
 
---
--- Dumping data for table `gas_history`
---
-
-INSERT INTO `gas_history` (`id_history`, `id_tabung`, `id_supplier`, `id_user`, `tanggal`, `jenis_aktivitas`, `jumlah`) VALUES
-(46, 4, 5, 3, '2024-06-08', 'masuk', 100),
-(47, 4, NULL, 3, '2024-06-08', 'keluar', 20),
-(48, 4, 3, 3, '2024-06-08', 'masuk', 20),
-(49, 4, 2, 3, '2024-06-08', 'masuk', 60),
-(50, 4, 4, 3, '2024-06-08', 'masuk', 20);
-
 -- --------------------------------------------------------
 
 --
@@ -62,13 +51,6 @@ CREATE TABLE `gas_keluar` (
   `tanggal_keluar` timestamp NOT NULL DEFAULT current_timestamp(),
   `jumlah_keluar` int(11) NOT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
-
---
--- Dumping data for table `gas_keluar`
---
-
-INSERT INTO `gas_keluar` (`id_gas_keluar`, `id_tabung`, `id_user`, `id_supplier`, `tanggal_keluar`, `jumlah_keluar`) VALUES
-(8, 4, 3, 5, '2024-06-08 08:33:36', 20);
 
 --
 -- Triggers `gas_keluar`
@@ -133,16 +115,6 @@ CREATE TABLE `gas_masuk` (
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
 
 --
--- Dumping data for table `gas_masuk`
---
-
-INSERT INTO `gas_masuk` (`id_gas_masuk`, `id_tabung`, `id_user`, `id_supplier`, `tanggal_masuk`, `jumlah_masuk`) VALUES
-(49, 4, 3, 5, '2024-06-08 08:33:13', 100),
-(50, 4, 3, 3, '2024-06-08 08:34:50', 20),
-(51, 4, 3, 2, '2024-06-08 08:35:03', 60),
-(52, 4, 3, 4, '2024-06-08 08:35:17', 20);
-
---
 -- Triggers `gas_masuk`
 --
 DELIMITER $$
@@ -200,7 +172,12 @@ INSERT INTO `jenis_tabung` (`id_jenis_tabung`, `jenis_tabung`) VALUES
 (3, 'AR.82.%'),
 (4, 'O2'),
 (5, 'CO2'),
-(6, 'N2');
+(6, 'CRADLE_N2'),
+(7, 'CRADLE O2'),
+(8, 'SOLAR'),
+(9, 'PERTAMAX'),
+(10, 'DEXLITE'),
+(11, 'LPG');
 
 -- --------------------------------------------------------
 
@@ -267,25 +244,25 @@ INSERT INTO `tabung` (`id_tabung`, `nama_tabung`, `id_jenis_tabung`, `id_supplie
 (7, 'SIG_ARGON100', 1, 2, 'SIG_AR100', 0),
 (8, 'SIG_ARGON97', 2, 2, 'SIG_AR97', 0),
 (9, 'SIG_ARGON82', 3, 2, 'SIG_AR82', 0),
-(10, 'SIG_OKSIGEN', 4, 2, 'SIG_O2', 60),
+(10, 'SIG_OKSIGEN', 4, 2, 'SIG_O2', 0),
 (11, 'SIG_CO2', 5, 2, 'SIG_CO2', 0),
 (12, 'SIG_NITROGEN', 6, 2, 'SIG_NITRO', 0),
 (13, 'LANGGENG_ARGON100', 1, 3, 'LANG_AR100', 0),
 (14, 'LANGGENG_ARGON97', 2, 3, 'LANG_AR97', 0),
 (15, 'LANGGENG_ARGON82', 3, 3, 'LANG_AR82', 0),
-(16, 'LANGGENG_OKSIGEN', 4, 3, 'LANG_O2', 20),
+(16, 'LANGGENG_OKSIGEN', 4, 3, 'LANG_O2', 0),
 (17, 'LANGGENG_CO2', 5, 3, 'LANG_CO2', 0),
 (18, 'LANGGENG_NITROGEN', 6, 3, 'LANG_NITRO', 0),
 (19, 'TIRA_ARGON100', 1, 4, 'TIRA_AR100', 0),
 (20, 'TIRA_ARGON97', 2, 4, 'TIRA_AR97', 0),
 (21, 'TIRA_ARGON82', 3, 4, 'TIRA_AR82', 0),
-(22, 'TIRA_OKSIGEN', 4, 4, 'TIRA_O2', 20),
+(22, 'TIRA_OKSIGEN', 4, 4, 'TIRA_O2', 0),
 (23, 'TIRA_C02', 5, 4, 'TIRA_CO2', 0),
 (24, 'TIRA_NITROGEN', 6, 4, 'TIRA_NITRO', 0),
 (25, 'SAMATOR_ARGON100', 1, 5, 'SMTR_AR100', 0),
 (26, 'SAMATOR_ARGON97', 2, 5, 'SMTR_AR97', 0),
 (27, 'SAMATOR_ARGON82', 3, 5, 'SMTR_AR82', 0),
-(28, 'SAMATOR_OKSIGEN', 4, 5, 'SMTR_O2', 80),
+(28, 'SAMATOR_OKSIGEN', 4, 5, 'SMTR_O2', 0),
 (29, 'SAMATOR_CO2', 5, 5, 'SMTR_CO2', 0),
 (30, 'SAMATOR_NITROGEN', 6, 5, 'SMTR_NITRO', 0);
 
@@ -356,7 +333,7 @@ ALTER TABLE `tabung`
 -- AUTO_INCREMENT for table `gas_history`
 --
 ALTER TABLE `gas_history`
-  MODIFY `id_history` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=51;
+  MODIFY `id_history` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=52;
 
 --
 -- AUTO_INCREMENT for table `gas_keluar`
@@ -368,13 +345,13 @@ ALTER TABLE `gas_keluar`
 -- AUTO_INCREMENT for table `gas_masuk`
 --
 ALTER TABLE `gas_masuk`
-  MODIFY `id_gas_masuk` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=53;
+  MODIFY `id_gas_masuk` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=54;
 
 --
 -- AUTO_INCREMENT for table `jenis_tabung`
 --
 ALTER TABLE `jenis_tabung`
-  MODIFY `id_jenis_tabung` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=7;
+  MODIFY `id_jenis_tabung` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=12;
 
 --
 -- AUTO_INCREMENT for table `pengguna`
