@@ -15,7 +15,7 @@ def register_user(nama_user, email_user, password_user):
         try:
             cursor.execute(query, (nama_user, email_user, hashed_password))
             conn.commit()
-            st.success("Registrasi berhasil. Anda sekarang dapat login.")
+            st.success("Registrasi berhasil. lanjutkan untuk login.")
         except mysql.connector.Error as e:
             st.error(f"Error: {e}")
         finally:
