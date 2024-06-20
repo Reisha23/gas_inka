@@ -1,6 +1,5 @@
 import streamlit as st
 import pandas as pd
-import plotly.express as px
 import hashlib
 import mysql.connector
 from dashboard_functions import *
@@ -168,5 +167,3 @@ def login_page():
                 print(dataFix)
                 st.table(df)
                 
-        
-

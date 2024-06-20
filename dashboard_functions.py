@@ -1,5 +1,4 @@
 import pandas as pd
-import plotly.express as px
 import streamlit as st
 from query import *
 from datetime import datetime
@@ -27,7 +26,6 @@ def display_filtered_data(filter_transaction):
             dataFix.append((item[4].strftime('%Y-%m-%d %H:%M:%S'),item[5],item[7],item[11],item[13]))
         df = pd.DataFrame(dataFix, columns=("Tanggal keluar","Jumlah keluar","Nama Gas","Stock Tersisa","Supplier"))
         st.table(df)
-
 
 #filtered function sidebar supplier
 def display_filtered_supplier(filter_choice):
