@@ -8,10 +8,11 @@ from dashboard_functions import *
 def connect_to_database():
     try:
         conn = mysql.connector.connect(
-            host="127.0.0.1",
-            user="root",
-            password="",
-            database="gas_rev"
+            host="sql12.freesqldatabase.com",
+            port="3306",
+            user="sql12714926",
+            password="9i1vfA2Jrb",
+            database="sql12714926"
         )
         if conn.is_connected():
             return conn
@@ -90,7 +91,6 @@ def login_page():
                 st.session_state.filter_keluar = False
 
             if st.button("input gas keluar"):
-                print('halo')
                 st.session_state.filter_keluar = True
                 st.session_state.filter_masuk = False
             
