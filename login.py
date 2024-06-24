@@ -8,7 +8,7 @@ from dashboard_functions import *
 def connect_to_database():
     try:
         conn = mysql.connector.connect(
-            host="localhost",
+            host="192.168.152.121",
             port="3306",
             user="yudhosakti",
             password="1234",

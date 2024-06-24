@@ -6,7 +6,7 @@ import streamlit as st
 def connect_to_database():
     try:
         conn = mysql.connector.connect(
-            host="localhost",
+            host="192.168.152.121",
             port="3306",
             user="yudhosakti",
             password="1234",
@@ -42,6 +42,7 @@ def executeInserQuery(query,param):
         conn.close()
         return True
     else:
+        print(conn)
         return False
     
 
