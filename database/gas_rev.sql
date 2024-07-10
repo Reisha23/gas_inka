@@ -3,7 +3,7 @@
 -- https://www.phpmyadmin.net/
 --
 -- Host: 127.0.0.1
--- Generation Time: Jun 19, 2024 at 03:00 AM
+-- Generation Time: Jul 04, 2024 at 04:37 AM
 -- Server version: 10.4.27-MariaDB
 -- PHP Version: 8.2.0
 
@@ -32,10 +32,17 @@ CREATE TABLE `gas_history` (
   `id_tabung` int(11) DEFAULT NULL,
   `id_supplier` int(11) DEFAULT NULL,
   `id_user` int(11) DEFAULT NULL,
-  `tanggal` date NOT NULL,
+  `tanggal` timestamp NOT NULL DEFAULT current_timestamp() ON UPDATE current_timestamp(),
   `jenis_aktivitas` enum('masuk','keluar') NOT NULL,
   `jumlah` int(11) NOT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
+
+--
+-- Dumping data for table `gas_history`
+--
+
+INSERT INTO `gas_history` (`id_history`, `id_tabung`, `id_supplier`, `id_user`, `tanggal`, `jenis_aktivitas`, `jumlah`) VALUES
+(94, 1, 3, 8, '2024-07-04 01:39:28', 'masuk', 99);
 
 -- --------------------------------------------------------
 
@@ -62,14 +69,16 @@ CREATE TRIGGER `after_gas_keluar_insert` AFTER INSERT ON `gas_keluar` FOR EACH R
         tanggal,
         jenis_aktivitas,
         jumlah,
-        id_user
+        id_user,
+        id_supplier
     )
 VALUES(
     NEW.id_tabung,
     NEW.tanggal_keluar,
     'keluar',
     NEW.jumlah_keluar,
-    NEW.id_user
+    NEW.id_user,
+    NEW.id_supplier
 ) ;
 END
 $$
@@ -113,6 +122,13 @@ CREATE TABLE `gas_masuk` (
   `tanggal_masuk` timestamp NOT NULL DEFAULT current_timestamp(),
   `jumlah_masuk` int(11) NOT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
+
+--
+-- Dumping data for table `gas_masuk`
+--
+
+INSERT INTO `gas_masuk` (`id_gas_masuk`, `id_tabung`, `id_user`, `id_supplier`, `tanggal_masuk`, `jumlah_masuk`) VALUES
+(69, 1, 8, 3, '2024-07-04 01:39:28', 99);
 
 --
 -- Triggers `gas_masuk`
@@ -188,7 +204,6 @@ INSERT INTO `jenis_tabung` (`id_jenis_tabung`, `jenis_tabung`) VALUES
 CREATE TABLE `pengguna` (
   `id_user` int(11) NOT NULL,
   `nama_user` varchar(255) NOT NULL,
-  `email_user` varchar(255) NOT NULL,
   `password_user` varchar(255) NOT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
 
@@ -196,9 +211,8 @@ CREATE TABLE `pengguna` (
 -- Dumping data for table `pengguna`
 --
 
-INSERT INTO `pengguna` (`id_user`, `nama_user`, `email_user`, `password_user`) VALUES
-(3, 'Gudang1', 'gudangInv1@gmail.com', '25d55ad283aa400af464c76d713c07ad'),
-(5, 'gudang2', 'gudangInv2@gmail.com', '1bbd886460827015e5d605ed44252251');
+INSERT INTO `pengguna` (`id_user`, `nama_user`, `password_user`) VALUES
+(8, 'Reisha', '25d55ad283aa400af464c76d713c07ad');
 
 -- --------------------------------------------------------
 
@@ -247,7 +261,7 @@ INSERT INTO `tabung` (`id_tabung`, `nama_tabung`, `id_jenis_tabung`, `id_supplie
 (10, 'SIG_OKSIGEN', 4, 2, 'SIG_O2', 0),
 (11, 'SIG_CO2', 5, 2, 'SIG_CO2', 0),
 (12, 'SIG_NITROGEN', 6, 2, 'SIG_NITRO', 0),
-(13, 'LANGGENG_ARGON100', 1, 3, 'LANG_AR100', 0),
+(13, 'LANGGENG_ARGON100', 1, 3, 'LANG_AR100', 99),
 (14, 'LANGGENG_ARGON97', 2, 3, 'LANG_AR97', 0),
 (15, 'LANGGENG_ARGON82', 3, 3, 'LANG_AR82', 0),
 (16, 'LANGGENG_OKSIGEN', 4, 3, 'LANG_O2', 0),
@@ -307,8 +321,7 @@ ALTER TABLE `jenis_tabung`
 -- Indexes for table `pengguna`
 --
 ALTER TABLE `pengguna`
-  ADD PRIMARY KEY (`id_user`),
-  ADD UNIQUE KEY `email_user` (`email_user`);
+  ADD PRIMARY KEY (`id_user`);
 
 --
 -- Indexes for table `supplier`
@@ -333,19 +346,19 @@ ALTER TABLE `tabung`
 -- AUTO_INCREMENT for table `gas_history`
 --
 ALTER TABLE `gas_history`
-  MODIFY `id_history` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=52;
+  MODIFY `id_history` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=95;
 
 --
 -- AUTO_INCREMENT for table `gas_keluar`
 --
 ALTER TABLE `gas_keluar`
-  MODIFY `id_gas_keluar` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=9;
+  MODIFY `id_gas_keluar` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=36;
 
 --
 -- AUTO_INCREMENT for table `gas_masuk`
 --
 ALTER TABLE `gas_masuk`
-  MODIFY `id_gas_masuk` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=54;
+  MODIFY `id_gas_masuk` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=70;
 
 --
 -- AUTO_INCREMENT for table `jenis_tabung`
@@ -357,7 +370,7 @@ ALTER TABLE `jenis_tabung`
 -- AUTO_INCREMENT for table `pengguna`
 --
 ALTER TABLE `pengguna`
-  MODIFY `id_user` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=6;
+  MODIFY `id_user` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=9;
 
 --
 -- AUTO_INCREMENT for table `supplier`
@@ -379,9 +392,9 @@ ALTER TABLE `tabung`
 -- Constraints for table `gas_history`
 --
 ALTER TABLE `gas_history`
-  ADD CONSTRAINT `gas_history_ibfk_1` FOREIGN KEY (`id_tabung`) REFERENCES `jenis_tabung` (`id_jenis_tabung`),
-  ADD CONSTRAINT `gas_history_ibfk_2` FOREIGN KEY (`id_supplier`) REFERENCES `supplier` (`id_supplier`),
-  ADD CONSTRAINT `gas_history_ibfk_4` FOREIGN KEY (`id_user`) REFERENCES `pengguna` (`id_user`);
+  ADD CONSTRAINT `gas_history_supp` FOREIGN KEY (`id_supplier`) REFERENCES `supplier` (`id_supplier`),
+  ADD CONSTRAINT `gas_history_tabung` FOREIGN KEY (`id_tabung`) REFERENCES `jenis_tabung` (`id_jenis_tabung`),
+  ADD CONSTRAINT `gas_history_user` FOREIGN KEY (`id_user`) REFERENCES `pengguna` (`id_user`);
 
 --
 -- Constraints for table `gas_keluar`

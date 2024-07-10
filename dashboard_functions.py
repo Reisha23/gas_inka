@@ -1,5 +1,5 @@
-import pandas as pd
 import streamlit as st
+import pandas as pd
 from query import *
 from datetime import datetime
 
@@ -11,7 +11,7 @@ def load_data():
 #filtered function from sidebar
 def display_filtered_data(filter_transaction):
 
-    if filter_transaction == "Gas masuk":
+    if filter_transaction == "riwayat gas masuk":
         data = view_all_masuk()
         dataFix = []
         for item in data:
@@ -19,7 +19,7 @@ def display_filtered_data(filter_transaction):
         df = pd.DataFrame(dataFix, columns=("Tanggal Masuk","Jumlah Masuk","Nama Gas","Total Stock","Supplier"))
         st.table(df)
         
-    elif filter_transaction == "Gas keluar":
+    elif filter_transaction == "riwayat gas keluar":
         data = view_all_keluar()
         dataFix = []
         for item in data:
@@ -143,7 +143,7 @@ def display_input_data(is_masuk):
     st.session_state.selected_supplier = st.selectbox("Select Supplier", supplier_names)
     st.session_state.selected_user = st.selectbox("Select User", user_names)
     st.session_state.jumlah = st.number_input("Jumlah", min_value=1, step=1, value=st.session_state.jumlah)
-   
+    print(st.session_state.selected_supplier)
 
     if st.button("Submit"):
         tabung_id = 0
@@ -160,8 +160,8 @@ def display_input_data(is_masuk):
         for item in dataSupplierAll:
             if item['nama'] == st.session_state.selected_supplier:
                supplier_id = item['id']
+               print(item['id'])
                break
-        
         
         jumlah = st.session_state.jumlah
         query = "INSERT INTO gas_masuk (id_tabung, id_user, id_supplier, jumlah_masuk) VALUES (%s, %s, %s, %s)"
@@ -179,10 +179,7 @@ def display_input_data(is_masuk):
            else:
               st.error("Internal Error")
         except:
-          st.error("Internal Error")
-        
-
-#menambahkan notifikasi peringatan ketika supply mulai menipis
+          st.error("Internal Error")        
 
 # format codingan agar lebih rapi ketika semua sudah work
 # ! deploying web app.py
