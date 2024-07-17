@@ -6,7 +6,7 @@ import streamlit as st
 def connect_to_database():
     try:
         conn = mysql.connector.connect(
-            host="114.125.110.56",
+            host="140.82.116.4",
             user="u9421688_gas_rev",
             password="ertiga1164",
             database="u9421688_gas_rev"
