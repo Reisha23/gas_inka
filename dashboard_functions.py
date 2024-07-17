@@ -78,6 +78,15 @@ def display_filtered_supplier(filter_choice):
         df = pd.DataFrame(dataFix, columns=("Nama Gas","Total Stock"))
         st.table(df)
     
+    elif filter_choice == "BBM":
+        angka = 6
+        data = view_all_supplier(angka)
+        dataFix = []
+        for item in data:
+            dataFix.append((item[1],item[5]))
+        df = pd.DataFrame(dataFix, columns=("Nama Gas", "Total Stock"))
+        st.table(df)
+    
 # Fungsi filter CRU
 # Fungsi untuk mendapatkan pilihan dari tabel
 def get_select_options(table, id_col, name_col):
@@ -181,5 +190,4 @@ def display_input_data(is_masuk):
         except:
           st.error("Internal Error")        
 
-# format codingan agar lebih rapi ketika semua sudah work
-# ! deploying web app.py
+# ! deploying web app.py dan beserta databasenya

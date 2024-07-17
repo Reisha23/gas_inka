@@ -3,7 +3,7 @@
 -- https://www.phpmyadmin.net/
 --
 -- Host: 127.0.0.1
--- Generation Time: Jul 04, 2024 at 04:37 AM
+-- Generation Time: Jul 15, 2024 at 03:36 AM
 -- Server version: 10.4.27-MariaDB
 -- PHP Version: 8.2.0
 
@@ -36,13 +36,6 @@ CREATE TABLE `gas_history` (
   `jenis_aktivitas` enum('masuk','keluar') NOT NULL,
   `jumlah` int(11) NOT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
-
---
--- Dumping data for table `gas_history`
---
-
-INSERT INTO `gas_history` (`id_history`, `id_tabung`, `id_supplier`, `id_user`, `tanggal`, `jenis_aktivitas`, `jumlah`) VALUES
-(94, 1, 3, 8, '2024-07-04 01:39:28', 'masuk', 99);
 
 -- --------------------------------------------------------
 
@@ -122,13 +115,6 @@ CREATE TABLE `gas_masuk` (
   `tanggal_masuk` timestamp NOT NULL DEFAULT current_timestamp(),
   `jumlah_masuk` int(11) NOT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
-
---
--- Dumping data for table `gas_masuk`
---
-
-INSERT INTO `gas_masuk` (`id_gas_masuk`, `id_tabung`, `id_user`, `id_supplier`, `tanggal_masuk`, `jumlah_masuk`) VALUES
-(69, 1, 8, 3, '2024-07-04 01:39:28', 99);
 
 --
 -- Triggers `gas_masuk`
@@ -212,7 +198,8 @@ CREATE TABLE `pengguna` (
 --
 
 INSERT INTO `pengguna` (`id_user`, `nama_user`, `password_user`) VALUES
-(8, 'Reisha', '25d55ad283aa400af464c76d713c07ad');
+(8, 'Reisha', '25d55ad283aa400af464c76d713c07ad'),
+(9, 'Cahya', '25d55ad283aa400af464c76d713c07ad');
 
 -- --------------------------------------------------------
 
@@ -230,6 +217,7 @@ CREATE TABLE `supplier` (
 --
 
 INSERT INTO `supplier` (`id_supplier`, `nama_supplier`) VALUES
+(6, 'BBM'),
 (3, 'LANGGENG'),
 (5, 'SAMATOR'),
 (2, 'SIG'),
@@ -261,7 +249,7 @@ INSERT INTO `tabung` (`id_tabung`, `nama_tabung`, `id_jenis_tabung`, `id_supplie
 (10, 'SIG_OKSIGEN', 4, 2, 'SIG_O2', 0),
 (11, 'SIG_CO2', 5, 2, 'SIG_CO2', 0),
 (12, 'SIG_NITROGEN', 6, 2, 'SIG_NITRO', 0),
-(13, 'LANGGENG_ARGON100', 1, 3, 'LANG_AR100', 99),
+(13, 'LANGGENG_ARGON100', 1, 3, 'LANG_AR100', 0),
 (14, 'LANGGENG_ARGON97', 2, 3, 'LANG_AR97', 0),
 (15, 'LANGGENG_ARGON82', 3, 3, 'LANG_AR82', 0),
 (16, 'LANGGENG_OKSIGEN', 4, 3, 'LANG_O2', 0),
@@ -278,7 +266,15 @@ INSERT INTO `tabung` (`id_tabung`, `nama_tabung`, `id_jenis_tabung`, `id_supplie
 (27, 'SAMATOR_ARGON82', 3, 5, 'SMTR_AR82', 0),
 (28, 'SAMATOR_OKSIGEN', 4, 5, 'SMTR_O2', 0),
 (29, 'SAMATOR_CO2', 5, 5, 'SMTR_CO2', 0),
-(30, 'SAMATOR_NITROGEN', 6, 5, 'SMTR_NITRO', 0);
+(30, 'SAMATOR_NITROGEN', 6, 5, 'SMTR_NITRO', 0),
+(31, 'SIG_CRADLE_O2', 7, 2, 'SIG_CRADLE_O2', 0),
+(33, 'LANGGENG_CRADLE_O2', 7, 3, 'LANG_CRADLE_O2', 0),
+(34, 'SAMATOR_CRADLE_O2', 7, 5, 'SAM_CRADLE_O2', 0),
+(35, 'TIRA_CRADLE_O2', 7, 4, 'TIRA_CRADLE_O2', 0),
+(36, 'BBM_DEXLITE', 10, 6, 'BBM_DEX', 0),
+(37, 'BBM_LPG', 11, 6, 'BBM_LPG', 0),
+(38, 'BBM_SOLAR', 8, 6, 'BBM_SOLAR', 0),
+(39, 'BBM_PERTAMAX', 9, 6, 'BBM_PERTAMAX', 0);
 
 --
 -- Indexes for dumped tables
@@ -346,19 +342,19 @@ ALTER TABLE `tabung`
 -- AUTO_INCREMENT for table `gas_history`
 --
 ALTER TABLE `gas_history`
-  MODIFY `id_history` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=95;
+  MODIFY `id_history` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=123;
 
 --
 -- AUTO_INCREMENT for table `gas_keluar`
 --
 ALTER TABLE `gas_keluar`
-  MODIFY `id_gas_keluar` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=36;
+  MODIFY `id_gas_keluar` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=45;
 
 --
 -- AUTO_INCREMENT for table `gas_masuk`
 --
 ALTER TABLE `gas_masuk`
-  MODIFY `id_gas_masuk` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=70;
+  MODIFY `id_gas_masuk` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=89;
 
 --
 -- AUTO_INCREMENT for table `jenis_tabung`
@@ -370,19 +366,19 @@ ALTER TABLE `jenis_tabung`
 -- AUTO_INCREMENT for table `pengguna`
 --
 ALTER TABLE `pengguna`
-  MODIFY `id_user` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=9;
+  MODIFY `id_user` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=12;
 
 --
 -- AUTO_INCREMENT for table `supplier`
 --
 ALTER TABLE `supplier`
-  MODIFY `id_supplier` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=6;
+  MODIFY `id_supplier` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=7;
 
 --
 -- AUTO_INCREMENT for table `tabung`
 --
 ALTER TABLE `tabung`
-  MODIFY `id_tabung` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=31;
+  MODIFY `id_tabung` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=40;
 
 --
 -- Constraints for dumped tables

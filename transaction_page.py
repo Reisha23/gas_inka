@@ -25,8 +25,8 @@ def show_transaction_page():
     
     filter_choice = st.selectbox(
         "stok gas by supplier :", 
-        ["SIG", "LANGGENG", "TIRA", "SAMATOR"],
-        index=["SIG", "LANGGENG", "TIRA", "SAMATOR"].index(st.session_state.filter_choice)
+        ["SIG", "LANGGENG", "TIRA", "SAMATOR", "BBM"],
+        index=["SIG", "LANGGENG", "TIRA", "SAMATOR", "BBM"].index(st.session_state.filter_choice)
     )
     if filter_choice != st.session_state.filter_choice:
         st.session_state.filter_choice = filter_choice

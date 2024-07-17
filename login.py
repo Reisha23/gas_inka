@@ -80,12 +80,11 @@ def dashboard_page():
         st.subheader("Total stock gas:")
         all_stock_data = get_all_stock_tabung()
         dataFinal = []
-        stockTemp = [0, 0, 0, 0]
+        stockTemp = [0, 0, 0, 0, 0]  # Tambahkan elemen kelima untuk BBM
         id_temp = 0
         nama_temp = ''
-        stock_temp = 0
         index = 0
-        stock_mapping = {'LANGGENG': 0, 'SAMATOR': 1, 'SIG': 2, 'TIRA': 3}
+        stock_mapping = {'LANGGENG': 0, 'SAMATOR': 1, 'SIG': 2, 'TIRA': 3, 'BBM': 4}
         
         for item in all_stock_data:
             if id_temp == 0:
@@ -95,7 +94,7 @@ def dashboard_page():
             if id_temp != item[0]:
                 total_stock = sum(stockTemp)
                 dataFinal.append((nama_temp, *stockTemp, total_stock))
-                stockTemp = [0, 0, 0, 0]
+                stockTemp = [0, 0, 0, 0, 0]  # Reset stockTemp
                 id_temp = item[0]
                 nama_temp = item[1]
                 if total_stock < 80:
@@ -104,9 +103,10 @@ def dashboard_page():
                 if id_temp != item[0]:
                     total_stock = sum(stockTemp)
                     dataFinal.append((nama_temp, *stockTemp, total_stock))
-                    stockTemp = [0, 0, 0, 0]
+                    stockTemp = [0, 0, 0, 0, 0]  # Reset stockTemp
                     id_temp = item[0]
                     nama_temp = item[1]
+                    print(nama_temp)
                     stockTemp[stock_mapping[item[2]]] = item[3]
                     total_stock = sum(stockTemp)
                     dataFinal.append((nama_temp, *stockTemp, total_stock))
@@ -119,16 +119,16 @@ def dashboard_page():
                     dataFinal.append((nama_temp, *stockTemp, total_stock))
                     if total_stock < 80:
                         st.warning(f"Stock {nama_temp} dibawah ambang batas! Total stock: {total_stock}")
-                    stockTemp = [0, 0, 0, 0]
+                    stockTemp = [0, 0, 0, 0, 0]  # Reset stockTemp
                     break
                      
             stockTemp[stock_mapping[item[2]]] = item[3]
             index += 1
         
-        print(dataFinal)
+        #print(dataFinal)
                          
         if all_stock_data:
-            df = pd.DataFrame(dataFinal, columns=("Nama", "Langgeng", "Samator", "SIG", "TIRA", "Total Stock"))
+            df = pd.DataFrame(dataFinal, columns=("Nama", "Langgeng", "Samator", "SIG", "TIRA", "BBM", "Total Stock"))
             st.table(df)
             
             # Tambahkan warna pada sel yang bernilai 0
@@ -138,7 +138,7 @@ def dashboard_page():
                 color = 'red' if val == 0 else 'white'
                 return f'background-color: {color}'
             
-            styled_df = df.style.applymap(highlight_zero, subset=pd.IndexSlice[:, ["Langgeng", "Samator", "SIG", "TIRA"]])
+            styled_df = df.style.applymap(highlight_zero, subset=pd.IndexSlice[:, ["Langgeng", "Samator", "SIG", "TIRA", "BBM"]])
             st.dataframe(styled_df)
             
             # Tambahkan grafik batang
