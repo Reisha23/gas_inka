@@ -6,10 +6,10 @@ import streamlit as st
 def connect_to_database():
     try:
         conn = mysql.connector.connect(
-            host="127.0.0.1",
-            user="root",
-            password="",
-            database="gas_rev"
+            host="yudho.online",
+            user="u9421688_gas_rev",
+            password="ertiga1164",
+            database="u9421688_gas_rev"
         )
         if conn.is_connected():
             return conn
