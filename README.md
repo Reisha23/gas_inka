@@ -1,6 +1,8 @@
 welcome to dashboard INKA
 
 don't know how to run ?
+---------------------------------------------------------------------------------
+*FOR DEVELOPER INSTALLATION :
 
 CLONE :
 clone this repository using git.bash
@@ -24,7 +26,29 @@ How to run :
 2)run use terminal type 'streamlit run app.py'
 
 XAMPP :
-install XAMPP
-run apache & MySQL
-import database at folder name 'database'
-select import 'gas_rev.sql'
+1) install XAMPP
+2) run apache & MySQL
+3) at MySQL option click 'admin'
+4) import database at folder name 'database' to phpMyAdmin
+5) select import 'gas_rev.sql'
+---------------------------------------------------------------------------------
+
+---------------------------------------------------------------------------------
+*FOR USER INSTALLATION :
+
+PYTHON :
+1)download python and install
+2)open terminal, type "pip install streamlit", "pip install plotly", "pip install mysql-connector", "pip install pandas"
+
+DATABASE :
+1) install XAMPP
+2) run apache & MySQL
+3) at MySQL option click 'admin'
+4) import database at folder name 'database' to phpMyAdmin
+5) select import 'gas_rev.sql'
+
+RUN :
+1)open gas_inka folder
+2)select file name RUN.bat
+3)double click it
+---------------------------------------------------------------------------------
