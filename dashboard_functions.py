@@ -8,7 +8,7 @@ def load_data():
     all_stock_data = view_all_stock() #menambahkan fungsi menampilkan seluruh data stock
     return all_stock_data
 
-#filtered function from sidebar
+#filtered function
 def display_filtered_data(filter_transaction):
 
     if filter_transaction == "riwayat gas masuk":
@@ -97,7 +97,7 @@ def get_select_options(table, id_col, name_col):
         return options
     else:
         return {}
-    
+
 # Fungsi untuk menampilkan input form dan menginput data ke database
 def display_input_data(is_masuk):
     print(is_masuk)
@@ -108,86 +108,94 @@ def display_input_data(is_masuk):
     dataSupplierAll = []
     dataTabungAll = []
     for item in data:
-       dataUserAll.append(
-           {
-               "id" : item[0],
-               "nama" : item[1]
-           }
-       )
+        dataUserAll.append(
+            {
+                "id": item[0],
+                "nama": item[1]
+            }
+        )
     for item in dataTabung:
-       dataTabungAll.append(
-           {
-               "id" : item[0],
-               "nama" : item[1]
-           }
-       )
+        dataTabungAll.append(
+            {
+                "id": item[0],
+                "nama": item[1]
+            }
+        )
     for item in dataSupplier:
-       dataSupplierAll.append(
-           {
-               "id" : item[0],
-               "nama" : item[1]
-           }
-       )
-    
+        dataSupplierAll.append(
+            {
+                "id": item[0],
+                "nama": item[1]
+            }
+        )
+
     tabung_options = get_select_options('tabung', 'id_tabung', 'nama_tabung')
     supplier_options = get_select_options('supplier', 'id_supplier', 'nama_supplier')
-    user_options = get_select_options('pengguna', 'id_user', 'nama_user')
-    
+    #user_options = get_select_options('pengguna', 'id_user', 'nama_user')
+
     user_names = [user['nama'] for user in dataUserAll]
     tabung_names = [tabung['nama'] for tabung in dataTabungAll]
     supplier_names = [supplier['nama'] for supplier in dataSupplierAll]
-    
+
     st.subheader("Input Data Gas")
-    
+
     if 'selected_tabung' not in st.session_state:
         st.session_state.selected_tabung = None
     if 'selected_supplier' not in st.session_state:
         st.session_state.selected_supplier = None
-    if 'selected_user' not in st.session_state:
-        st.session_state.selected_user = None
+    #if 'selected_user' not in st.session_state:
+        #st.session_state.selected_user = None
     if 'jumlah' not in st.session_state:
         st.session_state.jumlah = 1
+    if 'confirm' not in st.session_state:
+        st.session_state.confirm = False
 
     st.session_state.selected_tabung = st.selectbox("Select Tabung", tabung_names)
     st.session_state.selected_supplier = st.selectbox("Select Supplier", supplier_names)
-    st.session_state.selected_user = st.selectbox("Select User", user_names)
+    #st.session_state.selected_user = st.selectbox("Select User", user_names)
     st.session_state.jumlah = st.number_input("Jumlah", min_value=1, step=1, value=st.session_state.jumlah)
     print(st.session_state.selected_supplier)
 
     if st.button("Submit"):
-        tabung_id = 0
-        supplier_id = 0
-        user_id = 0
-        for item in dataUserAll:
-            if item['nama'] == st.session_state.selected_user:
-               user_id = item['id']
-               break
-        for item in dataTabungAll:
-            if item['nama'] == st.session_state.selected_tabung:
-               tabung_id  = item['id']
-               break
-        for item in dataSupplierAll:
-            if item['nama'] == st.session_state.selected_supplier:
-               supplier_id = item['id']
-               print(item['id'])
-               break
-        
-        jumlah = st.session_state.jumlah
-        query = "INSERT INTO gas_masuk (id_tabung, id_user, id_supplier, jumlah_masuk) VALUES (%s, %s, %s, %s)"
-        
-        if is_masuk:
+        st.session_state.confirm = True
+
+    if st.session_state.confirm:
+        st.warning("Anda yakin telah memasukkan data dengan benar? Pastikan kembali untuk memasukkan data dengan benar!")
+        if st.button("Yes, Submit"):
+            st.session_state.confirm = False
+            tabung_id = 0
+            supplier_id = 0
+            user_id = 0
+            for item in dataTabungAll:
+                if item['nama'] == st.session_state.selected_tabung:
+                    tabung_id = item['id']
+                    break
+            for item in dataSupplierAll:
+                if item['nama'] == st.session_state.selected_supplier:
+                    supplier_id = item['id']
+                    print(item['id'])
+                    break
+
+            jumlah = st.session_state.jumlah
             query = "INSERT INTO gas_masuk (id_tabung, id_user, id_supplier, jumlah_masuk) VALUES (%s, %s, %s, %s)"
-        else:
-            query = "INSERT INTO gas_keluar (id_tabung, id_user, id_supplier, jumlah_keluar) VALUES (%s, %s, %s, %s)"
-        
-        params = tabung_id,user_id,supplier_id,jumlah
-        
-        try:
-           if executeInserQuery(query,params):
-             st.success("Data successfully submitted!")
-           else:
-              st.error("Internal Error")
-        except:
-          st.error("Internal Error")        
+
+            if is_masuk:
+                query = "INSERT INTO gas_masuk (id_tabung, id_user, id_supplier, jumlah_masuk) VALUES (%s, %s, %s, %s)"
+            else:
+                query = "INSERT INTO gas_keluar (id_tabung, id_user, id_supplier, jumlah_keluar) VALUES (%s, %s, %s, %s)"
+
+            params = tabung_id, st.session_state.loggin_in_userid, supplier_id, jumlah
+
+            try:
+                if executeInserQuery(query, params):
+                    st.success("Data successfully submitted!")
+                else:
+                    st.error("Internal Error")
+            except:
+                st.error("Internal Error")
+        elif st.button("Cancel"):
+            st.session_state.confirm = False
+            
+            
 
 # ! deploying web app.py dan beserta databasenya

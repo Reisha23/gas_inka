@@ -10,10 +10,10 @@ from transaction_page import show_transaction_page
 def connect_to_database():
     try:
         conn = mysql.connector.connect(
-            host="140.82.116.4",
-            user="u9421688_gas_rev",
-            password="ertiga1164",
-            database="u9421688_gas_rev"
+            host="127.0.0.1",
+            user="root",
+            password="",
+            database="gas_rev"
         )
         if conn.is_connected():
             return conn
@@ -42,7 +42,10 @@ def login_user(nama_user, password_user):
     '''
     result = execute_query(query, (nama_user, password_user))
     if result:
-        return result[0][1]  # Mengembalikan nama pengguna
+        listTest = []
+        listTest.append(result[0][0])
+        listTest.append(result[0][1])
+        return listTest  # Mengembalikan nama pengguna
     else:
         return None
 
@@ -54,7 +57,8 @@ def login_page():
     if st.button("Login"):
         user = login_user(username, password)
         if user:
-            st.session_state.logged_in_user = user
+            st.session_state.logged_in_user = user[1]
+            st.session_state.loggin_in_userid = user[0]
             st.session_state.page = 'dashboard'
             st.experimental_rerun()
         else:
